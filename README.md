@@ -1,21 +1,15 @@
 # Simple-Chat-App
 
-## Installation Instructions
+## Run Instructions
 
 **Step 1**  
 
 ```
-pip install -r requirements.txt
+sudo bash build.sh [CONTAINER_NAME]
 ```
 
-**Step 2**  
+**Step 2 browse app**  
 
 ```
-python main.py
-```
-
-**Step 3 browse app**  
-
-```
-http://localhost:5000
+http://localhost:8080
 ```
