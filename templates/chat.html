@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Chat + Like</title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+<ul id="messages"></ul>
+<input type="text" id="myMessage">
+<button id="sendbutton">Send</button>
+</body>
+</html>
+<script type="text/javascript">
+
+	function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+	var socket = io.connect('http://127.0.0.1:5000');
+	socket.on('connect', function() {
+		var cookie = getCookie('name');
+		var name = '';
+		if (cookie === ''){
+			name = 'User';
+		}
+		else{
+			name = cookie.split('|')[0]
+		}
+		socket.send(name + ' has connected!');
+	});
+	function like_mssg(mssg_id){
+		socket.emit('like', mssg_id);
+	}
+	socket.on('message', function(msg) {
+		obj = JSON.parse(msg);
+		$("#messages").append('<li'+' id='+  '"'+ obj.message_id +'"'  +'>'+obj.message+ ':' + 'Likes=0' +'</li>' + '<button onclick="like_mssg('+obj.message_id+')">Like !</button>');
+		console.log('Received message');
+	});
+
+	socket.on('like', function(msg) {
+		console.log(msg);
+		var html = document.getElementById(String(msg)).innerHTML;
+		console.log(html);
+		var arr = html.split(':');
+		var likes = arr[arr.length-1];
+		console.log(likes);
+		likes = parseInt(likes.split("=")[1]) + 1;
+		arr[arr.length-1] = "Likes=" + String(likes);
+		document.getElementById(String(msg)).innerHTML = arr.join(":");
+		console.log('Like message');
+	});
+
+	$('#sendbutton').on('click', function() {
+		socket.send($('#myMessage').val());
+		$('#myMessage').val('');
+	});
+
+</script>
