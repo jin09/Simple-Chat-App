@@ -14,8 +14,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
-**Step 3 browse app in browser**  
+**Step 3 browse app**  
 
 ```
-https://localhost:5000
+http://localhost:5000
 ```
